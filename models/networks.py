@@ -260,7 +260,7 @@ class GANLoss(nn.Module):
         if self.gan_mode in ['lsgan', 'vanilla']:
             target_tensor = self.get_target_tensor(prediction, target_is_real)
             loss = self.loss(prediction, target_tensor)
-        elif self.gan_mode == 'wgangp':
+        elif self.gan_mode == 'wgangp': 
             if target_is_real:
                 loss = -prediction.mean()
             else:
@@ -294,12 +294,14 @@ def cal_gradient_penalty(netD, real_data, fake_data, device, type='mixed', const
             interpolatesv = alpha * real_data + ((1 - alpha) * fake_data)
         else:
             raise NotImplementedError('{} not implemented'.format(type))
+        
         interpolatesv.requires_grad_(True)
         disc_interpolates = netD(interpolatesv)
         gradients = torch.autograd.grad(outputs=disc_interpolates, inputs=interpolatesv,
                                         grad_outputs=torch.ones(disc_interpolates.size()).to(device),
-                                        create_graph=True, retain_graph=True, only_inputs=True)
+                                        create_graph=True, retain_graph=True, only_inputs=True)#[0]#added [0]
         gradients = gradients[0].view(real_data.size(0), -1)  # flat the data
+        #TODO Mean along first or second dimension?
         gradient_penalty = (((gradients + 1e-16).norm(2, dim=1) - constant) ** 2).mean() * lambda_gp        # added eps
         return gradient_penalty, gradients
     else:
