@@ -32,7 +32,7 @@ class Pix2PixModel(BaseModel):
         parser.set_defaults(norm='batch', netG='unet_256', dataset_mode='aligned')
         if is_train:
             parser.set_defaults(pool_size=0, gan_mode='wgangp')
-            parser.add_argument('--lambda_L1', type=float, default=100.0, help='weight for L1 loss')
+            parser.add_argument('--lambda_L1', type=float, default=0.0, help='weight for L1 loss')
 
             #TODO Wasserstein loss, in opts, multiplied at the end
 
@@ -46,9 +46,7 @@ class Pix2PixModel(BaseModel):
         """
         BaseModel.__init__(self, opt)
         # specify the training losses you want to print out. The training/test scripts will call <BaseModel.get_current_losses>
-        self.loss_names = ['G_GAN', 'G_L1', 'D_real', 'D_fake']
-        
-        #TODO Wasserstein loss
+        self.loss_names = ['G_GAN', 'D_real', 'D_fake'] #'G_L1'
         
         # specify the images you want to save/display. The training/test scripts will call <BaseModel.get_current_visuals>
         self.visual_names = ['real_A', 'fake_B', 'real_B']
